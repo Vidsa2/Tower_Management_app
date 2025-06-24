@@ -37,7 +37,7 @@ class DashboardCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(16.0), // Match card border radius
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(10.0),
           child: Column(
             mainAxisAlignment:
                 MainAxisAlignment.center, // Center content vertically
@@ -45,39 +45,27 @@ class DashboardCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
-                  color: Colors.white, // White background for the icon circle
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(
-                        0.05,
-                      ), // Subtle shadow for icon circle
-                      spreadRadius: 1,
-                      blurRadius: 5,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+                  color: const Color.fromARGB(
+                    230,
+                    230,
+                    230,
+                    255,
+                  ), // White background for the icon circle
                 ),
-                child: iconPath != null
-                    ? Image.asset(
-                        iconPath!,
-                        width: 40,
-                        height: 40,
-                      ) // Display image asset
-                    : Icon(
-                        iconData,
-                        size: 40,
-                        color: iconColor,
-                      ), // Display Flutter Icon
+                child: Image.asset(
+                  iconPath!,
+                  width: 140,
+                  height: 100,
+                ), // Display image asset
               ),
-              const SizedBox(height: 12.0), // Space between icon and text
+              const SizedBox(height: 8.0), // Space between icon and text
               Text(
                 title,
                 textAlign: TextAlign.center, // Center text
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: Color.fromARGB(255, 73, 27, 109),
                 ),
               ),
             ],

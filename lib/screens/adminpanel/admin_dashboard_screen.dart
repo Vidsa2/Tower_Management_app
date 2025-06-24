@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:tower_management_app/screens/widgets/dashboard_card.dart'; // Adjust import based on your actual structure
 import 'package:tower_management_app/screens/widgets/category_item.dart'; // Adjust import based on your actual structure
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -12,11 +14,21 @@ class AdminDashboardScreen extends StatefulWidget {
 
 class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
   final TextEditingController _searchController = TextEditingController();
-
+  File? _profileImage;
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _profileImage = File(pickedFile.path);
+      });
+    }
   }
 
   @override
@@ -25,21 +37,60 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       backgroundColor: Colors.grey[100], // Light background color from Figma
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0, // No shadow
-        leading: IconButton(
-          icon: const Icon(Icons.menu, color: Colors.black),
-          onPressed: () {
-            // This will open the Drawer if you implement it below
-            Scaffold.of(context).openDrawer();
-          },
-        ),
-        title: const Text(
-          'Hi Admin!',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        elevation: 0,
+        toolbarHeight: 100, // make room for Hi Admin + Welcome text
+        leadingWidth: 85,
+        leading: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Stack(
+            children: [
+              CircleAvatar(
+                radius: 42.5,
+                backgroundImage: _profileImage != null
+                    ? FileImage(_profileImage!)
+                    : const AssetImage('assets/images/profile.png')
+                          as ImageProvider,
+                backgroundColor: Colors.grey[300],
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: GestureDetector(
+                  onTap: _pickImage,
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.grey, width: 1),
+                    ),
+                    child: const Icon(
+                      Icons.edit,
+                      size: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
+        ),
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              'Hi Admin!',
+              style: TextStyle(
+                color: Color.fromARGB(255, 73, 27, 109),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              'Welcome to TowerPulse!',
+              style: TextStyle(color: Colors.black54, fontSize: 14),
+            ),
+          ],
         ),
         centerTitle: true,
         actions: [
@@ -52,95 +103,26 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      // --- Start of Optional: Navigation Drawer ---
-      // This is where you would put the code for the left-hand panel
-      // from your Figma design ("Admin View", "Pages", "Layers", etc.)
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).primaryColor, // Use your app's primary color
-              ),
-              child: const Text(
-                'Admin Panel',
-                style: TextStyle(color: Colors.white, fontSize: 24),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(Icons.dashboard),
-              title: const Text('Dashboard'),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                // Already on dashboard, so no navigation needed
-              },
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.person_outline,
-              ), // Example icon for Employee Details
-              title: const Text('Employee Details'),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                Navigator.pushNamed(context, '/admin/employee_details');
-              },
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.apartment,
-              ), // Example icon for Tower Details
-              title: const Text('Tower Details'),
-              onTap: () {
-                Navigator.pop(context); // Close the drawer
-                Navigator.pushNamed(context, '/admin/tower_details');
-              },
-            ),
-            // Add more ListTile items for other admin panel sections like
-            // "Pages", "Layers", "Settings", etc., if they exist in your full Figma design.
-            // Example for other Categories that might be in the drawer too:
-            ListTile(
-              leading: const Icon(Icons.calendar_today),
-              title: const Text('Attendance'),
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, '/admin/attendance');
-              },
-            ),
-            // ... and so on for other categories like Calendar, Staffs, Feedback if you want them in the drawer
-          ],
-        ),
-      ),
-      // --- End of Optional: Navigation Drawer ---
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Welcome to TowerPulse!',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 16.0),
+            const SizedBox(height: 4.0),
 
             _buildSearchBar(),
             const SizedBox(height: 24.0),
 
             _buildMainCardsGrid(context), // Pass context for navigation
-            const SizedBox(height: 24.0),
+            const SizedBox(height: 2.0),
 
             const Text(
               'Categories',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: Color.fromARGB(255, 73, 27, 109),
               ),
             ),
             const SizedBox(height: 12.0),
@@ -158,7 +140,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         borderRadius: BorderRadius.circular(12.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey,
             spreadRadius: 1,
             blurRadius: 5,
             offset: const Offset(0, 3),
@@ -193,7 +175,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           title: 'Employee Details',
           iconPath:
               'assets/images/employee_icon.png', // Replace with your actual asset path
-          backgroundColor: const Color(0xFFE8F2FF),
+          backgroundColor: const Color.fromARGB(230, 230, 230, 255),
           onTap: () {
             Navigator.pushNamed(context, '/admin/employee_details');
           },
@@ -202,7 +184,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           title: 'Tower Details',
           iconPath:
               'assets/images/tower_icon.png', // Replace with your actual asset path
-          backgroundColor: const Color(0xFFFFECEB),
+          backgroundColor: const Color.fromARGB(230, 230, 230, 255),
           onTap: () {
             Navigator.pushNamed(context, '/admin/tower_details');
           },
@@ -211,7 +193,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           title: 'Report Analytics',
           iconPath:
               'assets/images/analytics_icon.png', // Replace with your actual asset path
-          backgroundColor: const Color(0xFFFFF7E7),
+          backgroundColor: const Color.fromARGB(230, 230, 230, 255),
           onTap: () {
             Navigator.pushNamed(context, '/admin/report_analytics');
           },
@@ -220,7 +202,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           title: 'Safety Measures',
           iconPath:
               'assets/images/safety_icon.png', // Replace with your actual asset path
-          backgroundColor: const Color(0xFFE6F8ED),
+          backgroundColor: const Color.fromARGB(230, 230, 230, 255),
           onTap: () {
             Navigator.pushNamed(context, '/admin/safety_measures');
           },
@@ -235,8 +217,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
       child: Row(
         children: [
           CategoryItem(
-            title: 'Attendance',
-            iconData: Icons.calendar_today,
+            title: 'Reminders',
+            iconPath: 'assets/images/reminder.png',
             backgroundColor: const Color(0xFFF0F0F0),
             onTap: () {
               Navigator.pushNamed(context, '/admin/attendance');
@@ -245,7 +227,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           const SizedBox(width: 12.0),
           CategoryItem(
             title: 'Calendar',
-            iconData: Icons.event,
+            iconPath: 'assets/images/calender.png',
             backgroundColor: const Color(0xFFF0F0F0),
             onTap: () {
               Navigator.pushNamed(context, '/admin/calendar');
@@ -254,7 +236,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           const SizedBox(width: 12.0),
           CategoryItem(
             title: 'Staffs',
-            iconData: Icons.people,
+            iconPath: 'assets/images/staffs.png',
             backgroundColor: const Color(0xFFF0F0F0),
             onTap: () {
               Navigator.pushNamed(context, '/admin/staffs');
@@ -263,7 +245,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
           const SizedBox(width: 12.0),
           CategoryItem(
             title: 'Feedback',
-            iconData: Icons.feedback,
+            iconPath: 'assets/images/feedback.png',
             backgroundColor: const Color(0xFFF0F0F0),
             onTap: () {
               Navigator.pushNamed(context, '/admin/feedback');
