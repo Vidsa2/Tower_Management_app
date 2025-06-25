@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'tower_individual_detail_page.dart'; // Navigates to the individual tower detail page
-import 'tower_model.dart'; // Adjust path if you place the model elsewhere
+import 'tower_individual_detail_page.dart';
+import 'tower_model.dart';
+import 'add_tower.dart';
 
-// This screen matches the '/admin/tower_details' route in your main.dart
 class TowerDetailsScreen extends StatefulWidget {
   const TowerDetailsScreen({super.key});
 
@@ -11,133 +11,231 @@ class TowerDetailsScreen extends StatefulWidget {
 }
 
 class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
-  // State to hold the list of towers
   final List<Tower> towers = mockTowers;
 
-  // This function would handle adding a new tower.
-  void _addNewTower() {
-    // In a real app, this would open a new screen with a form.
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Add new tower functionality would be here.'),
-        backgroundColor: Color(0xFF007AFF),
-      ),
+  void _addNewTower() async {
+    // Navigate to the AddTowerPage and wait for the new tower data
+    final newTower = await Navigator.push<Tower>(
+      context,
+      MaterialPageRoute(builder: (context) => const AddTowerPage()),
     );
+
+    if (newTower != null) {
+      setState(() {
+        towers.add(newTower); // Add the new tower to the list
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('New tower added successfully!'),
+          backgroundColor: Color(0xFF6A1B9A),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F7),
-      appBar: AppBar(
-        title: Text(
-          'Towers',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: const Color(0xFF1C1C1E),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(120),
+        child: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          flexibleSpace: Padding(
+            padding: const EdgeInsets.only(top: 12, left: 16, right: 16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 12, bottom: 4, left: 8),
+                          child: Text(
+                            'Tower Details',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 73, 27, 109),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
+                      Expanded(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Search Towers',
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 8,
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey[100],
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide: BorderSide.none,
+                            ),
+                            isDense: true,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Center(
+                  child: SizedBox(
+                    height: 70,
+                    width: 70,
+                    child: ClipOval(
+                      child: Image.asset(
+                        'assets/images/profile.png',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: false,
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16.0),
-        itemCount: towers.length,
-        itemBuilder: (context, index) {
-          final tower = towers[index];
-          return TowerListItem(
-            tower: tower,
-            onTap: () {
-              // Navigate to the detail screen when an item is tapped
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  // We navigate to a new page that shows details for one tower
-                  builder: (context) => TowerIndividualDetailPage(tower: tower),
-                ),
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _addNewTower,
-        backgroundColor: const Color(0xFF007AFF),
-        shape: const CircleBorder(),
-        child: const Icon(Icons.add, color: Colors.white, size: 32),
-      ),
-    );
-  }
-}
 
-// A reusable widget for displaying a single tower in the list.
-class TowerListItem extends StatelessWidget {
-  final Tower tower;
-  final VoidCallback onTap;
-
-  const TowerListItem({super.key, required this.tower, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 12.0),
-        padding: const EdgeInsets.all(12.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey,
-              spreadRadius: 1,
-              blurRadius: 5,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.network(
-                tower.imageUrl,
-                width: 70,
-                height: 70,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    width: 70,
-                    height: 70,
-                    color: Colors.grey[200],
-                    child: Icon(Icons.broken_image, color: Colors.grey[400]),
-                  );
+            const SizedBox(height: 16),
+            Expanded(
+              child: GridView.builder(
+                itemCount: towers.length + 1,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.85,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                ),
+                itemBuilder: (context, index) {
+                  if (index == 0) {
+                    return GestureDetector(
+                      onTap: _addNewTower,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.add_circle,
+                            size: 64,
+                            color: Color.fromARGB(255, 73, 27, 109),
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    final tower = towers[index - 1];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                TowerIndividualDetailPage(tower: tower),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 177, 167, 167),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 4,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: const BorderRadius.vertical(
+                                  top: Radius.circular(16),
+                                ),
+                                child: Image.asset(
+                                  tower.imageUrl,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Container(
+                                      color: Colors.grey[300],
+                                      child: const Icon(
+                                        Icons.broken_image,
+                                        size: 48,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(0.0),
+                              child: Container(
+                                color: Color.fromARGB(255, 73, 27, 109),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      tower.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                        color: Color.fromARGB(
+                                          255,
+                                          255,
+                                          255,
+                                          255,
+                                        ),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    Text(
+                                      tower.code,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        color: Color.fromARGB(
+                                          255,
+                                          217,
+                                          216,
+                                          216,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    tower.name,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    tower.code,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.arrow_forward_ios, color: Colors.grey, size: 16),
           ],
         ),
       ),

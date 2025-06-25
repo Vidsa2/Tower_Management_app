@@ -1,55 +1,112 @@
-// --- DATA MODEL ---
-// A simple class to represent a Tower's data.
 class Tower {
-  final int id;
-  final String name;
-  final String code;
-  final String imageUrl;
-  final String description;
+  int id;
+  String name;
+  String code;
+  String imageUrl;
+  String description;
+  String district;
+  String address;
+  String coordinates;
+  String mapLink;
+  String lastInspector;
+  String lastInspectionDate;
+  String lastInspectionTime;
+  String nextInspector;
+  String nextInspectionDate;
+  String nextInspectionTime;
+  String repairAndReplacement;
 
-  const Tower({
+  Tower({
     required this.id,
     required this.name,
     required this.code,
     required this.imageUrl,
     required this.description,
+    required this.district,
+    required this.address,
+    required this.coordinates,
+    required this.mapLink,
+    required this.lastInspector,
+    required this.lastInspectionDate,
+    required this.lastInspectionTime,
+    required this.nextInspector,
+    required this.nextInspectionDate,
+    required this.nextInspectionTime,
+    required this.repairAndReplacement,
   });
 }
 
-// --- MOCK DATA ---
-// A list of sample towers to populate the UI. In a real app, this would
-// come from a database or an API.
-const List<Tower> mockTowers = [
+List<Tower> mockTowers = [
   Tower(
     id: 1,
-    name: 'Eiffel Tower',
+    name: 'Colombo',
     code: 'TWR-001',
-    imageUrl: 'https://placehold.co/600x400/A9C2D4/FFFFFF?text=Eiffel+Tower',
-    description:
-        'A wrought-iron lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower.',
+    imageUrl: 'assets/images/colombo_tower.png',
+    description: 'Colombo communication tower hub.',
+    district: 'Colombo',
+    address: 'Gangadara Mawatta, Mount Lavinia',
+    mapLink: 'https://goo.gl/maps/ColomboTower',
+    coordinates: 'N 6.9, E 79.8',
+    lastInspector: 'Ramesh–322',
+    lastInspectionDate: '10/05/2025',
+    lastInspectionTime: '0900h',
+    nextInspector: 'Ramesh–322',
+    nextInspectionDate: '10/05/2025',
+    nextInspectionTime: '0900h',
+    repairAndReplacement: 'antenna replacement scheduled for 15/05/2025',
   ),
   Tower(
     id: 2,
-    name: 'Burj Khalifa',
-    code: 'TWR-002',
-    imageUrl: 'https://placehold.co/600x400/D4A9A9/FFFFFF?text=Burj+Khalifa',
-    description:
-        'The tallest building in the world, located in Dubai, United Arab Emirates. Its design is inspired by the spider lily, a regional desert flower.',
+    name: 'Kandy',
+    code: 'TWR-003',
+    imageUrl: 'assets/images/kandy_tower.png',
+    description: 'Primary relay tower in the Central Highlands.',
+    district: 'Kandy',
+    address: 'Riverdale Road, Kandy',
+    coordinates: 'N 7.3, E 80.6',
+    mapLink: 'https://goo.gl/maps/KandyTower',
+    lastInspector: 'Kamal–204',
+    lastInspectionDate: '18/04/2025',
+    lastInspectionTime: '1030h',
+    nextInspector: 'Ramesh–322',
+    nextInspectionDate: '10/05/2025',
+    nextInspectionTime: '0900h',
+    repairAndReplacement: 'antenna replacement scheduled for 15/05/2025',
   ),
   Tower(
     id: 3,
-    name: 'CN Tower',
-    code: 'TWR-003',
-    imageUrl: 'https://placehold.co/600x400/A9D4B7/FFFFFF?text=CN+Tower',
-    description:
-        'A 553.3 m-high concrete communications and observation tower in downtown Toronto, Ontario, Canada. It was completed in 1976.',
+    name: 'Galle',
+    code: 'TWR-005',
+    imageUrl: 'assets/images/galle_tower.png',
+    description: 'Southern broadcast tower for coastal signals.',
+    district: 'Galle',
+    address: 'Light House Street, Galle Fort',
+    coordinates: 'N 6.0, E 80.2',
+    mapLink: 'https://goo.gl/maps/GalleTower',
+    lastInspector: 'Nuwan–518',
+    lastInspectionDate: '25/03/2025',
+    lastInspectionTime: '0830h',
+    nextInspector: 'Ramesh–322',
+    nextInspectionDate: '10/05/2025',
+    nextInspectionTime: '0900h',
+    repairAndReplacement: 'antenna replacement scheduled for 15/05/2025',
   ),
   Tower(
     id: 4,
-    name: 'Tokyo Skytree',
+    name: 'Jaffna',
     code: 'TWR-004',
-    imageUrl: 'https://placehold.co/600x400/D4C9A9/FFFFFF?text=Tokyo+Skytree',
-    description:
-        'A broadcasting and observation tower in Sumida, Tokyo. It became the tallest structure in Japan in 2010 and reached its full height of 634.0 metres in March 2011.',
+    imageUrl: 'assets/images/jaffna_tower.png',
+    description: 'Northern provincial signal relay station.',
+    district: 'Jaffna',
+    address: 'Stanley Road, Jaffna Town',
+    coordinates: 'N 9.7, E 80.0',
+    mapLink: 'https://goo.gl/maps/JaffnaTower',
+    lastInspector: 'Siva–219',
+    lastInspectionDate: '15/02/2025',
+    lastInspectionTime: '1100h',
+    nextInspector: 'Ramesh–322',
+    nextInspectionDate: '10/05/2025',
+    nextInspectionTime: '0900h',
+    repairAndReplacement: 'antenna replacement scheduled for 15/05/2025',
   ),
 ];
