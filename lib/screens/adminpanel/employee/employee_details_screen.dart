@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class TowerDetailsScreen extends StatelessWidget {
-  const TowerDetailsScreen({super.key});
+class EmployeeDetailsScreen extends StatelessWidget {
+  const EmployeeDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Tower Details',
+          'Employee Details',
           style: TextStyle(
             color: Colors.black,
           ), // Match Admin Dashboard AppBar title color
@@ -25,28 +25,28 @@ class TowerDetailsScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.apartment, // Example icon for towers
+              Icons.people_alt, // Example icon
               size: 80,
               color: Colors.grey,
             ),
             SizedBox(height: 16),
             Text(
-              'This is the Tower Details Page',
+              'This is the Employee Details Page 123',
               style: TextStyle(fontSize: 20, color: Colors.grey),
             ),
             SizedBox(height: 8),
             Text(
-              'Manage your tower information and status here!',
+              'Start building your employee list and details here!',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
         ),
       ),
-      // You can add FloatingActionButton for adding new towers, etc.
+      // You can add FloatingActionButton, BottomNavigationBar, etc., here if needed
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {
-      //     // Action for adding new tower
+      //     // Action for adding new employee
       //   },
       //   child: Icon(Icons.add),
       // ),

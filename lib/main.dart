@@ -5,8 +5,8 @@ import 'screens/verification/register_screen.dart';
 
 // Import the admin screens and widgets
 import 'screens/adminpanel/admin_dashboard_screen.dart';
-import 'screens/adminpanel/employee_details_screen.dart';
-import 'screens/adminpanel/tower_details_screen.dart';
+import 'screens/adminpanel/employee/employee_details_screen.dart';
+import 'screens/adminpanel/tower/tower_details_screen.dart';
 import 'screens/adminpanel/report_analytics_screen.dart';
 import 'screens/adminpanel/safety_measures_screen.dart';
 import 'screens/adminpanel/attendance_screen.dart';
