@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'tower_model.dart'; // Make sure the Tower class and mockTowers are properly imported
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart'; // for date formatting
+import 'dart:io';
+import 'tower_model.dart';
 
 class AddTowerPage extends StatefulWidget {
   const AddTowerPage({super.key});
@@ -35,12 +38,38 @@ class _AddTowerPageState extends State<AddTowerPage> {
   final TextEditingController _repairAndReplacementController =
       TextEditingController();
 
+  // ImagePicker instance
+  final ImagePicker _picker = ImagePicker();
+  XFile? _image;
+
+  // Date and Time Pickers
+  void _selectDate(TextEditingController controller) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+    if (pickedDate != null) {
+      controller.text = DateFormat('dd/MM/yyyy').format(pickedDate);
+    }
+  }
+
+  void _selectTime(TextEditingController controller) async {
+    TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (pickedTime != null && mounted) {
+      controller.text = pickedTime.format(context);
+    }
+  }
+
+  // Function to handle form submission
   void _submitForm() {
     if (_formKey.currentState?.validate() ?? false) {
       final newTower = Tower(
-        id:
-            mockTowers.length +
-            1, // You can generate a unique ID based on your logic
+        id: mockTowers.length + 1,
         name: _nameController.text,
         code: _codeController.text,
         imageUrl: _imageUrlController.text,
@@ -63,6 +92,17 @@ class _AddTowerPageState extends State<AddTowerPage> {
     }
   }
 
+  // Pick an image from the gallery
+  void _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _image = pickedFile;
+        _imageUrlController.text = _image!.path;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,98 +117,120 @@ class _AddTowerPageState extends State<AddTowerPage> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter a name' : null,
-                ),
-                TextFormField(
-                  controller: _codeController,
-                  decoration: const InputDecoration(labelText: 'Code'),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter a code' : null,
-                ),
-                TextFormField(
-                  controller: _imageUrlController,
-                  decoration: const InputDecoration(labelText: 'Image URL'),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter an image URL' : null,
-                ),
-                TextFormField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
-                ),
-                TextFormField(
-                  controller: _districtController,
-                  decoration: const InputDecoration(labelText: 'District'),
-                ),
-                TextFormField(
-                  controller: _addressController,
-                  decoration: const InputDecoration(labelText: 'Address'),
-                ),
-                TextFormField(
-                  controller: _coordinatesController,
-                  decoration: const InputDecoration(labelText: 'Coordinates'),
-                ),
-                TextFormField(
-                  controller: _mapLinkController,
-                  decoration: const InputDecoration(labelText: 'Map Link'),
-                ),
-                TextFormField(
-                  controller: _lastInspectorController,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Inspector',
+                // Image URL or Gallery Selection
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: _image == null
+                        ? const Icon(Icons.camera_alt, size: 100)
+                        : Image.file(File(_image!.path), fit: BoxFit.cover),
                   ),
                 ),
-                TextFormField(
-                  controller: _lastInspectionDateController,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Inspection Date',
-                  ),
+                const SizedBox(height: 16),
+
+                // Custom Rectangle Input Fields with Purple Border and Radius
+                _buildTextField(_nameController, 'Name'),
+                _buildTextField(_codeController, 'Code'),
+                _buildTextField(_districtController, 'District'),
+                _buildTextField(_addressController, 'Address'),
+                _buildTextField(_coordinatesController, 'Coordinates'),
+                _buildTextField(_mapLinkController, 'Map Link'),
+                _buildTextField(_descriptionController, 'Description'),
+                _buildTextField(_lastInspectorController, 'Last Inspector'),
+                _buildDateTimePickerField(
+                  _lastInspectionDateController,
+                  'Last Inspection Date',
+                  _selectDate,
                 ),
-                TextFormField(
-                  controller: _lastInspectionTimeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Inspection Time',
-                  ),
+                _buildDateTimePickerField(
+                  _lastInspectionTimeController,
+                  'Last Inspection Time',
+                  _selectTime,
                 ),
-                TextFormField(
-                  controller: _nextInspectorController,
-                  decoration: const InputDecoration(
-                    labelText: 'Next Inspector',
-                  ),
+                // New Fields
+                _buildTextField(_nextInspectorController, 'Next Inspector'),
+                _buildDateTimePickerField(
+                  _nextInspectionDateController,
+                  'Next Inspection Date',
+                  _selectDate,
                 ),
-                TextFormField(
-                  controller: _nextInspectionDateController,
-                  decoration: const InputDecoration(
-                    labelText: 'Next Inspection Date',
-                  ),
+                _buildDateTimePickerField(
+                  _nextInspectionTimeController,
+                  'Next Inspection Time',
+                  _selectTime,
                 ),
-                TextFormField(
-                  controller: _nextInspectionTimeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Next Inspection Time',
-                  ),
+                _buildTextField(
+                  _repairAndReplacementController,
+                  'Repair and Replacement',
                 ),
-                TextFormField(
-                  controller: _repairAndReplacementController,
-                  decoration: const InputDecoration(
-                    labelText: 'Repair and Replacement',
-                  ),
-                ),
+
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _submitForm,
-                  child: const Text('Save Tower'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF6A1B9A),
                   ),
+                  onPressed: _submitForm,
+                  child: const Text('Save Tower'),
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  // Custom method to create the rectangle input fields with purple border and radius
+  Widget _buildTextField(TextEditingController controller, String label) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Color(0xFF6A1B9A), width: 2),
+          ),
+        ),
+        validator: (value) {
+          if (value!.isEmpty) {
+            return 'Please enter $label';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  // Custom method to handle date and time pickers for the fields
+  Widget _buildDateTimePickerField(
+    TextEditingController controller,
+    String label,
+    Function onTapCallback,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(color: Color(0xFF6A1B9A), width: 2),
+          ),
+        ),
+        onTap: () => onTapCallback(controller),
+        readOnly: true,
       ),
     );
   }
