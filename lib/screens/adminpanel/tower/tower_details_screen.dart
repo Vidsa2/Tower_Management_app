@@ -20,6 +20,9 @@ class _TowerDetailsScreenState extends State<TowerDetailsScreen> {
       MaterialPageRoute(builder: (context) => const AddTowerPage()),
     );
 
+    // Guard the use of context with 'mounted' to avoid issues if the widget is disposed
+    if (!mounted) return;
+
     if (newTower != null) {
       setState(() {
         towers.add(newTower); // Add the new tower to the list

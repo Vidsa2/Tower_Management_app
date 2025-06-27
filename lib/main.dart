@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/splash_screen.dart';
 import 'screens/verification/login_screen.dart';
 import 'screens/verification/register_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 // Import the admin screens and widgets
 import 'screens/adminpanel/admin_dashboard_screen.dart';
@@ -15,6 +16,9 @@ import 'screens/adminpanel/staffs_screen.dart';
 import 'screens/adminpanel/feedback_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp(); // Initialize Firebase if you're using it
+  // Initialize any necessary services or plugins here, if needed
   runApp(const MyApp());
 }
 
